@@ -8,19 +8,33 @@ bot = Bot(TOKEN_API)
 dp = Dispatcher(bot)
 
 HELP_COMMAND = '''
-/help - список команд
-/start - начать работу с ботом
+<b>/help</b> - <em>Список команд</em>
+<b>/start</b> - <em>Старт бота</em>
+<b>/description</b> - <em>Описание бота</em>
+<b>/photo</b> - <em>Отправка фото</em>
 '''
+
 @dp.message_handler(commands=['help']) #декоратор обработки
 async def help_command (message: types.Message):
-    await message.reply(text = HELP_COMMAND) #Перевод текста в верхний регистр
+    await message.answer(text = HELP_COMMAND, 
+                           parse_mode = 'HTML') #Перевод текста в верхний регистр
+    await message.delete()
 
 @dp.message_handler(commands=['start']) #декоратор обработки
 async def start_command(message: types.Message):
     await message.answer(text = 'Hello World!') #Перевод текста в верхний регистр
     await message.delete()
-    
+
+@dp.message_handler(commands=['description']) #декоратор обработки
+async def description_command (message: types.Message):
+    await message.answer(text = 'Наш бот умеет то  и то')
+    await message.delete()
+
+@dp.message_handler(commands=['photo']) #декоратор обработки
+async def photo_command (message: types.Message):
+    await bot.send_photo(message.chat.id,photo = 'https://chudo-prirody.com/uploads/posts/2021-08/1628905018_79-p-skachat-foto-milikh-kotikov-85.jpg')
+    await message.delete()
 
 if __name__ == '__main__':
-    executor.start_polling(dp)
+    executor.start_polling(dp,skip_updates=True)
     
