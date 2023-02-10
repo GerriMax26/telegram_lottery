@@ -1,4 +1,5 @@
 from aiogram import Bot,Dispatcher,executor,types
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 
 with open('C:/Users/admin/Desktop/token.txt','r') as file:
     TOKEN_API = file.readline()
@@ -6,6 +7,14 @@ with open('C:/Users/admin/Desktop/token.txt','r') as file:
 bot = Bot(TOKEN_API)
 
 dp = Dispatcher(bot)
+
+kb = ReplyKeyboardMarkup(resize_keyboard=True) #аргументы
+
+b1 = KeyboardButton('/help')
+b2 = KeyboardButton('/description')
+b3 = KeyboardButton('/photo')
+
+kb.insert(b1).insert(b2).insert(b3)
 
 HELP_COMMAND = '''
 <b>/help</b> - <em>Список команд</em>
@@ -22,7 +31,8 @@ async def help_command (message: types.Message):
 
 @dp.message_handler(commands=['start']) #декоратор обработки
 async def start_command(message: types.Message):
-    await message.answer(text = 'Hello World!') #Перевод текста в верхний регистр
+    await message.answer(text = 'Hello World!',
+                         reply_markup=kb) #Перевод текста в верхний регистр
     await message.delete()
 
 @dp.message_handler(commands=['description']) #декоратор обработки
