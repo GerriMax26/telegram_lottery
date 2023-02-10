@@ -7,11 +7,19 @@ bot = Bot(TOKEN_API)
 
 dp = Dispatcher(bot)
 
-@dp.message_handler() #декоратор обработки
-async def echo_upper (message: types.Message):
-    await message.answer(text = message.text.upper()) #Перевод текста в верхний регистр
+HELP_COMMAND = '''
+/help - список команд
+/start - начать работу с ботом
+'''
+@dp.message_handler(commands=['help']) #декоратор обработки
+async def help_command (message: types.Message):
+    await message.reply(text = HELP_COMMAND) #Перевод текста в верхний регистр
 
-
+@dp.message_handler(commands=['start']) #декоратор обработки
+async def start_command(message: types.Message):
+    await message.answer(text = 'Hello World!') #Перевод текста в верхний регистр
+    await message.delete()
+    
 
 if __name__ == '__main__':
     executor.start_polling(dp)
