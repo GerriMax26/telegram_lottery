@@ -1,0 +1,5 @@
+1) Библиотека aiogram 
+2) Декораторы
+3) https://www.youtube.com/watch?v=psay8TdXHmY&list=PLe-iIMbo5JOJm6DRTjhleHojroS-Bbocr&index=9 видео уроки
+4) https://habr.com/ru/company/ruvds/blog/351254/ Переменные окружения
+5) ассинхронные функции
