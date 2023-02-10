@@ -8,8 +8,8 @@ bot = Bot(TOKEN_API)
 dp = Dispatcher(bot)
 
 @dp.message_handler() #декоратор обработки
-async def echo (message: types.Message):
-    await message.answer(text = message.text) #Написать сообщение
+async def echo_upper (message: types.Message):
+    await message.answer(text = message.text.upper()) #Перевод текста в верхний регистр
 
 
 
