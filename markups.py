@@ -12,8 +12,8 @@ lang_menu.insert(lang_ru).insert(lang_en).insert(lang_es)
 def main_menu(lang):
     keybord = ReplyKeyboardMarkup(resize_keyboard=True)
     
-    button1 = KeyboardButton(translation_text('Регистарция'),lang)
-    button2 = KeyboardButton(translation_text('Покинуть лотерею'),lang)
+    button1 = KeyboardButton(translation_text('Регистрация',lang))
+    button2 = KeyboardButton(translation_text('Покинуть лотерею',lang))
     
     keybord.add(button1,button2)
     return keybord
