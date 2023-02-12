@@ -16,13 +16,11 @@ class Database:
         
 
     def user_exists(self,id_user):
-        with self.mydb:
             self.cursor.execute(f'select * from users where id_user = {id_user}')
             result = self.cursor.fetchall()
             return bool(len(result))
     
     def add_user(self,id_user,lang):
-        with self.mydb:
             sql = "INSERT INTO users (id_user,lang) VALUES (%s, %s)"
             val = (id_user,lang)
             self.cursor.execute(sql, val)
@@ -30,5 +28,21 @@ class Database:
         
         
     def get_lang(self,id_user):
-        with self.mydb:
-            return self.cursor.execute('select lang from users where id_user = ?', (id_user)).fetchone()[0]
+        self.cursor.execute(f'select lang from users where id_user = {id_user}')
+        result = self.cursor.fetchone()[0]
+        return result
+    
+    def add_info_user(self,array,id_user,lang):
+        array_val = []
+        
+        for i in array:
+            array_val.append(i)
+        
+        array_val.append(id_user)
+        
+        array_val.append(lang)
+        
+        sql = "update users set fullName = %s,country = %s, city = %s, address = %s, postCode = %s, phone = %s, email = %s where id_user = %s adn lang = %s"
+        val = tuple(array_val)
+        self.cursor.execute(sql, val)
+        self.mydb.commit()

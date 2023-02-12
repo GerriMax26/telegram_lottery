@@ -2,12 +2,14 @@ translations = {
     'en': {
         'Привет!':'Hello!',
         'Регистрация': 'Registration',
-        'Покинуть лотерею':'Leave the lottery'
+        'Покинуть лотерею':'Leave the lottery',
+        'Ваше Имя и Фамилия?':'Your first and last name?'
     },
     'es':{
         'Привет!': 'Hola!',
         'Регистрация': 'Registro',
-        'Покинуть лотерею':'Abandonar la lotería'
+        'Покинуть лотерею':'Abandonar la lotería',
+        'Ваше Имя и Фамилия?':'¿Su nombre y apellido?'
     }
 }
 
