@@ -42,7 +42,12 @@ class Database:
         
         array_val.append(lang)
         
-        sql = "update users set fullName = %s,country = %s, city = %s, address = %s, postCode = %s, phone = %s, email = %s where id_user = %s adn lang = %s"
+        sql = "update users set fullName = %s,country = %s, city = %s, address = %s, postCode = %s, phone = %s, email = %s where id_user = %s and lang = %s"
+        #update users set fullName = 'Maksim',country = 'Россия', city = 'Санкт-Петербург', address = 'Среднерогатская', postCode = 444444, phone = '89538320891', email = '@yandex.ru' where id_user = 1 and lang = 'en';
         val = tuple(array_val)
         self.cursor.execute(sql, val)
         self.mydb.commit()
+
+    
+    def get_fullName_user(self):
+        pass

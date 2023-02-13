@@ -17,3 +17,33 @@ def main_menu(lang):
     
     keybord.add(button1,button2)
     return keybord
+
+def next_menu(lang):
+    
+    keybord = ReplyKeyboardMarkup(resize_keyboard=True)
+    
+    lottery_button = KeyboardButton(translation_text('Лотерея',lang))
+    
+    instruction_button = KeyboardButton(translation_text('Инструкция',lang))
+    
+    support_button = KeyboardButton(translation_text('Поддержка',lang))
+    
+    personal_account_button = KeyboardButton(translation_text('Личный кабинет',lang))
+    
+    withdraw_money_button = KeyboardButton(translation_text('вывести деньги',lang))
+    
+    jackpot_size_button = KeyboardButton(translation_text('Размер джекпота',lang))
+    
+    referall_link_button = KeyboardButton(translation_text('Реферальная ссылка',lang))
+    
+    jackpot_button = KeyboardButton(translation_text('Джекпот',lang))
+    
+    keybord.add(lottery_button,
+                instruction_button,
+                support_button,
+                personal_account_button,
+                withdraw_money_button,
+                jackpot_size_button,
+                referall_link_button,
+                jackpot_button)
+    return keybord

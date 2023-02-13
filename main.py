@@ -4,7 +4,7 @@ from translation import translation_text
 from db import Database
 from questions import registrations
 
-with open('C:/Users/GaraevMaksim/Desktop/token.txt','r') as file:
+with open('C:/Users/elina/OneDrive/Рабочий стол/token.txt','r') as file:
     TOKEN_API = file.readline()
 
 bot = Bot(TOKEN_API)
@@ -68,26 +68,29 @@ async def mess(message: types.Message):
     
     lang = db.get_lang(message.from_user.id)
     
+    if count == 7:
+        array_response.append(message.text)
+        db.add_info_user(array_response,
+                        message.from_user.id,
+                        lang)
+        count = 0
+        current_button == ''
+        await bot.send_message(message.from_user.id,
+                               translation_text('Успешная регистрация!',lang))
+        
     if current_button == translation_text('Регистрация',lang):
         
-        array_response.append(message.text)
+        if count != 0:
+            array_response.append(message.text)
         
         await bot.delete_message(message.from_user.id,
                                  message.message_id)
         
         await bot.send_message(message.from_user.id,
-                               translation_text(registrations(count),
-                                                lang))
+                               translation_text(registrations(count),lang))
+        count += 1
         
-        if count <= 5:
-             count += 1
-        else:
-            db.add_info_user(array_response,
-                             message.from_user.id,
-                             lang)
-            count = 0
-        
-    
+
     else:
         pass
 
