@@ -3,8 +3,8 @@ import markups as nav
 from translation import translation_text
 from db import Database
 from questions import registrations
-
-with open('C:/Users/elina/OneDrive/Рабочий стол/token.txt','r') as file:
+#C:/Users/GaraevMaksim/Desktop/token.txt
+with open('C:/Users/GaraevMaksim/Desktop/token.txt','r') as file:
     TOKEN_API = file.readline()
 
 bot = Bot(TOKEN_API)
