@@ -9,7 +9,8 @@ translations = {
         'Ваш адрес?':'Your address?',
         'Ваш индеĸс?':'Your postal code?',
         'Ваш номер телефона?':'Your phone number?',
-        'Ваш адрес электронной почты?':'Your email address?'
+        'Ваш адрес электронной почты?':'Your email address?',
+        'Регистрация завершена!':'Registration is complete!'
     },
     'es':{
         'Привет!': 'Hola!',
@@ -21,7 +22,8 @@ translations = {
         'Ваш адрес?':'¿Su dirección?',
         'Ваш индеĸс?':'¿Su indie Postal?',
         'Ваш номер телефона?':'¿Su número de Teléfono?',
-        'Ваш адрес электронной почты?':'¿Su dirección de correo electrónico?'
+        'Ваш адрес электронной почты?':'¿Su dirección de correo electrónico?',
+        'Регистрация завершена!':'Inscripción completa!'
     }
 }
 
