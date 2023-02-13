@@ -6,3 +6,4 @@
 6) Бот для голосований VoteBot
 7) InlineKeyboardMarkup(row_width = {кол-во кнопок})
 8) translation + DB https://www.youtube.com/watch?v=Iycn2hydVj4
+9) mysqldump -u root -p lottery > C:\MySQLBackup\lottery_13022023.sql команда для бэкапа БД
