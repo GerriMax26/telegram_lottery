@@ -8,6 +8,8 @@ from FSM import UserState
 from FSM import BuyState
 from aiogram.dispatcher import FSMContext
 from generation_number_win_ticket import generation_win_ticket
+from calculation_winnings import calculation_win
+
 #C:/Users/GaraevMaksim/Desktop/token.txt
 #C:/Users/admin/Desktop/token.txt
 
@@ -164,17 +166,28 @@ async def buy_ticket(callback: types.CallbackQuery):
 
 @dp.message_handler(state = BuyState.send_number)
 async def get_send_numbers(message: types.Message, state: FSMContext):
+    
        
-       lang = db.get_lang(message.from_user.id)
+    lang = db.get_lang(message.from_user.id)
        
-       await state.update_data(send_number=message.text)
+    await state.update_data(send_number=message.text)
        
-       data = await state.get_data()
+    data = await state.get_data()
        
-       db.add_info_buy_tickets(message.from_user.id,data[0])
+    db.add_info_buy_tickets(message.from_user.id,data[0])
        
-       await bot.send_message(message.from_user.id,
-                               translation_text('Номер выигрышного билета: '+ generation_win_ticket(message.from_user.id,data[0]),
+    id_win_ticket = generation_win_ticket(message.from_user.id,data[0])
+       
+    await bot.send_message(message.from_user.id,
+                               translation_text('Номер выигрышного билета: '+ f"{id_win_ticket}",
+                                                lang))
+       
+    result_win = calculation_win(data[0],id_win_ticket,lang)
+    
+    db.add_prize(result_win,message.from_user.id,data[0],id_win_ticket)
+    
+    await bot.send_message(message.from_user.id,
+                               translation_text('Ваш выигрыш:'+ f"{result_win}" + translation_text('рублей',lang),
                                                 lang),
                                reply_markup=nav.buy_ticket(lang))
 

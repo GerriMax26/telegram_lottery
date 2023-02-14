@@ -68,3 +68,10 @@ class Database:
         val = (id_win_ticket,id_user,id_ticket)
         self.cursor.execute(sql, val)
         self.mydb.commit()
+    
+    def add_prize(self,amount_prize,id_user,id_ticket,win_ticket):
+        
+        sql = "INSERT INTO prize (amount_priz,id_user,id_buy_tickets,id_buy_tickets_users) VALUES (%s, %s, %s, %s)"
+        val = (amount_prize,id_user,id_ticket,win_ticket)
+        self.cursor.execute(sql, val)
+        self.mydb.commit()

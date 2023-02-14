@@ -22,7 +22,9 @@ translations = {
         'Купить билет':'Buy a ticket',
         'Оплата прошла успешно!':'The payment was successful!',
         'Отправьте число из 8-и цифр.':'Send an 8-digit number.',
-        'Номер выигрышного билета:':'Winning ticket number:'
+        'Номер выигрышного билета:':'Winning ticket number:',
+        'Ваш выигрыш:':'Your winnings:',
+        'рублей':'$'
     },
     'es':{
         'Привет!': 'Hola!',
@@ -47,7 +49,9 @@ translations = {
         'Купить билет':'Comprar un billete',
         'Оплата прошла успешно!':'¡El pago fue exitoso!',
         'Отправьте число из 8-и цифр.':'Envía un número de 8 dígitos.',
-        'Номер выигрышного билета:':'Número de billete ganador:'
+        'Номер выигрышного билета:':'Número de billete ganador:',
+        'Ваш выигрыш:':'Sus ganancias:',
+        'рублей':'euro'
     }
 }
 
