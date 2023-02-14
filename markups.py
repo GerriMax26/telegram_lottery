@@ -47,3 +47,13 @@ def next_menu(lang):
                 referall_link_button,
                 jackpot_button)
     return keybord
+
+def buy_ticket(lang):
+    
+    kb = InlineKeyboardMarkup(row_width=1)
+    
+    buy_lottery_ticket_button = InlineKeyboardButton(translation_text('Купить билет',lang),callback_data='buy')
+    
+    kb.add(buy_lottery_ticket_button)
+    
+    return kb

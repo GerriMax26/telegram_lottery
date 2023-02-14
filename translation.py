@@ -10,7 +10,19 @@ translations = {
         'Ваш индеĸс?':'Your postal code?',
         'Ваш номер телефона?':'Your phone number?',
         'Ваш адрес электронной почты?':'Your email address?',
-        'Регистрация завершена!':'Registration is complete!'
+        'регистрация завершена!':'registration is complete!',
+        'Лотерея':'Lottery',
+        'Инструкция':'Instruction',
+        'Поддержка':'Support',
+        'Личный кабинет':'Personal account',
+        'Вывести деньги':'Withdraw money',
+        'Размер джекпота':'Jackpot Size',
+        'Реферальная ссылка':'Referral link',
+        'Джекпот':'Jackpot',
+        'Купить билет':'Buy a ticket',
+        'Оплата прошла успешно!':'The payment was successful!',
+        'Отправьте число из 8-и цифр.':'Send an 8-digit number.',
+        'Номер выигрышного билета:':'Winning ticket number:'
     },
     'es':{
         'Привет!': 'Hola!',
@@ -23,7 +35,19 @@ translations = {
         'Ваш индеĸс?':'¿Su indie Postal?',
         'Ваш номер телефона?':'¿Su número de Teléfono?',
         'Ваш адрес электронной почты?':'¿Su dirección de correo electrónico?',
-        'Регистрация завершена!':'Inscripción completa!'
+        'регистрация завершена!':'inscripción completa!',
+        'Лотерея':'Lotería',
+        'Инструкция':'Instrucciones',
+        'Поддержка':'Soporte',
+        'Личный кабинет':'Área personal',
+        'Вывести деньги':'Retirar dinero',
+        'Размер джекпота':'Tamaño del bote',
+        'Реферальная ссылка':'Enlace de referencia',
+        'Джекпот':'Jackpot',
+        'Купить билет':'Comprar un billete',
+        'Оплата прошла успешно!':'¡El pago fue exitoso!',
+        'Отправьте число из 8-и цифр.':'Envía un número de 8 dígitos.',
+        'Номер выигрышного билета:':'Número de billete ganador:'
     }
 }
 

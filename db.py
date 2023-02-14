@@ -48,6 +48,23 @@ class Database:
         self.cursor.execute(sql, val)
         self.mydb.commit()
 
+    def add_payment(self,id_user,payment):
+        
+        sql = "INSERT INTO buy_tickets (id_ticket,payment) VALUES (%s, %s)"
+        val = (id_user,payment)
+        self.cursor.execute(sql, val)
+        self.mydb.commit()
     
-    def get_fullName_user(self):
-        pass
+    def add_info_buy_tickets(self,id_user,id_ticket):
+        
+        sql = "update buy_tickets set id_ticket = %s where id_user == %s"
+        val = (id_ticket,id_user)
+        self.cursor.execute(sql, val)
+        self.mydb.commit()
+    
+    def add_win_ticket(self,id_user,id_win_ticket,id_ticket):
+        
+        sql = "INSERT INTO win_tickets (id_win_ticket,id_user,id_ticket) VALUES (%s, %s, %s)"
+        val = (id_win_ticket,id_user,id_ticket)
+        self.cursor.execute(sql, val)
+        self.mydb.commit()

@@ -5,11 +5,13 @@ from db import Database
 from questions import registrations
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from FSM import UserState
+from FSM import BuyState
 from aiogram.dispatcher import FSMContext
-
+from generation_number_win_ticket import generation_win_ticket
 #C:/Users/GaraevMaksim/Desktop/token.txt
+#C:/Users/admin/Desktop/token.txt
 
-with open('C:/Users/GaraevMaksim/Desktop/token.txt','r') as file:
+with open('C:/Users/admin/Desktop/token.txt','r') as file:
     TOKEN_API = file.readline()
 
 bot = Bot(TOKEN_API)
@@ -125,10 +127,59 @@ async def get_email(message: types.Message, state: FSMContext):
     db.add_info_user(array_response,
                         message.from_user.id,
                         lang)
-    await bot.send_message(message.from_user.id,
-                               translation_text('Успешная регистрация!',lang))              
+    await bot.send_message(message.from_user.id,f"{data['full_name']},"+
+                               translation_text('Регистрация завершена!',lang),
+                               reply_markup=nav.next_menu(lang))
+            
     await state.reset_state(with_data=False)
-    
 
+
+@dp.message_handler(text = ['Лотерея','Lottery','Lotería'])
+async def button_buy_ticket(message: types.Message):
+    lang = db.get_lang(message.from_user.id)
+    await bot.send_message(message.from_user.id,
+                               translation_text('Купить билет',lang),
+                               reply_markup=nav.buy_ticket(lang))
+
+@dp.callback_query_handler(text_containce = 'buy')
+async def buy_ticket(callback: types.CallbackQuery):
+    
+    lang = db.get_lang(callback.from_user.id)
+    
+    payment = True # так как нет реализации оплаты, payment всегда True
+    
+    #блок с оплатой
+    if (payment):
+        
+        await bot.send_message(callback.from_user.id, 
+                           translation_text('Оплата прошла успешно!',lang))
+
+        db.add_payment(callback.from_user.id,
+                       payment)
+        
+        await BuyState.send_number.set()
+        
+        await bot.send_message(callback.from_user.id, 
+                           translation_text('Отправьте число из 8-и цифр',lang))
+
+@dp.message_handler(state = BuyState.send_number)
+async def get_send_numbers(message: types.Message, state: FSMContext):
+       
+       lang = db.get_lang(message.from_user.id)
+       
+       await state.update_data(send_number=message.text)
+       
+       data = await state.get_data()
+       
+       db.add_info_buy_tickets(message.from_user.id,data[0])
+       
+       await bot.send_message(message.from_user.id,
+                               translation_text('Номер выигрышного билета: '+ generation_win_ticket(message.from_user.id,data[0]),
+                                                lang),
+                               reply_markup=nav.buy_ticket(lang))
+
+
+        
+                           
 if __name__ == '__main__':
     executor.start_polling(dp,skip_updates=True)

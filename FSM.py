@@ -12,4 +12,6 @@ class UserState(StatesGroup):
     phone = State()
     email = State()
 
+class BuyState(StatesGroup):
+    send_number = State()
     
