@@ -16,15 +16,15 @@ class Database:
         
 
     def user_exists(self,id_user):
-            self.cursor.execute(f'select * from users where id_user = {id_user}')
-            result = self.cursor.fetchall()
-            return bool(len(result))
+        self.cursor.execute(f'select * from users where id_user = {id_user}')
+        result = self.cursor.fetchall()
+        return bool(len(result))
     
     def add_user(self,id_user,lang):
-            sql = "INSERT INTO users (id_user,lang) VALUES (%s, %s)"
-            val = (id_user,lang)
-            self.cursor.execute(sql, val)
-            self.mydb.commit()
+        sql = "INSERT INTO users (id_user,lang) VALUES (%s, %s)"
+        val = (id_user,lang)
+        self.cursor.execute(sql, val)
+        self.mydb.commit()
         
         
     def get_lang(self,id_user):
@@ -48,10 +48,10 @@ class Database:
         self.cursor.execute(sql, val)
         self.mydb.commit()
 
-    def add_payment(self,id_user,payment):
+    def add_payment(self,payment):
         
-        sql = "INSERT INTO buy_tickets (id_ticket,payment) VALUES (%s, %s)"
-        val = (id_user,payment)
+        sql = "INSERT INTO tickets (payment) VALUES (%s)"
+        val = (payment)
         self.cursor.execute(sql, val)
         self.mydb.commit()
     
@@ -75,3 +75,21 @@ class Database:
         val = (amount_prize,id_user,id_ticket,win_ticket)
         self.cursor.execute(sql, val)
         self.mydb.commit()
+    
+    def get_balance_user(self,id_user):
+        
+        sql = 'select balance from users where id_user = %s'
+        val = id_user
+        self.cursor.execute(sql,val)
+        result = self.cursor.fetchone()[0]
+        return result
+    
+    
+    def update_balance_user(self,id_user,prize):
+        
+        current_balance = self.get_balance_user(id_user)
+        sql = "update user set balance = %s where id_user == %s"
+        val = (prize + current_balance,id_user)
+        self.cursor.execute(sql, val)
+        self.mydb.commit()
+    

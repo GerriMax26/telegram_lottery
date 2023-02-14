@@ -53,7 +53,8 @@ def buy_ticket(lang):
     kb = InlineKeyboardMarkup(row_width=1)
     
     buy_lottery_ticket_button = InlineKeyboardButton(translation_text('Купить билет',lang),callback_data='buy')
+    leave_buy_ticket_button = InlineKeyboardButton(translation_text('Назад',lang),callback_data='back')
     
-    kb.add(buy_lottery_ticket_button)
+    kb.add(buy_lottery_ticket_button,leave_buy_ticket_button)
     
     return kb

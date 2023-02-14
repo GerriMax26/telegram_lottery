@@ -156,8 +156,7 @@ async def buy_ticket(callback: types.CallbackQuery):
         await bot.send_message(callback.from_user.id, 
                            translation_text('Оплата прошла успешно!',lang))
 
-        db.add_payment(callback.from_user.id,
-                       payment)
+        db.add_payment(payment) #Фиксируем факт оплаты
         
         await BuyState.send_number.set()
         
@@ -174,23 +173,33 @@ async def get_send_numbers(message: types.Message, state: FSMContext):
        
     data = await state.get_data()
        
-    db.add_info_buy_tickets(message.from_user.id,data[0])
+    db.add_info_buy_tickets(message.from_user.id,data[0]) #Добавить в БД номер билета, который ввел пользователь
        
-    id_win_ticket = generation_win_ticket(message.from_user.id,data[0])
+    id_win_ticket = generation_win_ticket(message.from_user.id,data[0]) #Генерация выигрышного билета
        
     await bot.send_message(message.from_user.id,
                                translation_text('Номер выигрышного билета: '+ f"{id_win_ticket}",
                                                 lang))
        
-    result_win = calculation_win(data[0],id_win_ticket,lang)
+    result_win = calculation_win(data[0],id_win_ticket,lang) #Расчет выигрыша
     
-    db.add_prize(result_win,message.from_user.id,data[0],id_win_ticket)
+    db.add_prize(result_win,message.from_user.id,data[0],id_win_ticket) #добавляем в БД размер выигрыша
     
     await bot.send_message(message.from_user.id,
                                translation_text('Ваш выигрыш:'+ f"{result_win}" + translation_text('рублей',lang),
                                                 lang),
                                reply_markup=nav.buy_ticket(lang))
-
+    
+    db.update_balance_user(message.from_user.id,result_win)#Обновляем баланс у пользователя
+    
+    await state.reset_state(with_data=False)
+    
+@dp.callback_query_handler(text_containce = 'back')
+async def back_menu(callback: types.CallbackQuery):
+    lang = db.get_lang(callback.from_user.id)
+    await bot.send_message(callback.from_user.id,
+                               translation_text('Главное меню',lang),
+                               reply_markup=nav.buy_ticket(lang))
 
         
                            

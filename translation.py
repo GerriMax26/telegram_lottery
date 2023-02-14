@@ -24,7 +24,8 @@ translations = {
         'Отправьте число из 8-и цифр.':'Send an 8-digit number.',
         'Номер выигрышного билета:':'Winning ticket number:',
         'Ваш выигрыш:':'Your winnings:',
-        'рублей':'$'
+        'рублей':'$',
+        'Назад':'Back'
     },
     'es':{
         'Привет!': 'Hola!',
@@ -51,7 +52,8 @@ translations = {
         'Отправьте число из 8-и цифр.':'Envía un número de 8 dígitos.',
         'Номер выигрышного билета:':'Número de billete ganador:',
         'Ваш выигрыш:':'Sus ganancias:',
-        'рублей':'euro'
+        'рублей':'euro',
+        'Назад':'Atrás'
     }
 }
 
