@@ -1,5 +1,7 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup,KeyboardButton
 from translation import translation_text
+from db import Database
+
 lang_menu = InlineKeyboardMarkup(row_width=3)
 
 lang_ru = InlineKeyboardButton(text = 'Русский',callback_data='lang_ru')
@@ -8,6 +10,7 @@ lang_es = InlineKeyboardButton(text = 'Español',callback_data='lang_es')
 
 lang_menu.insert(lang_ru).insert(lang_en).insert(lang_es)
 
+db1 = Database()
 
 def main_menu(lang):
     keybord = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -18,7 +21,7 @@ def main_menu(lang):
     keybord.add(button1,button2)
     return keybord
 
-def next_menu(lang):
+def next_menu(lang,id_user):
     
     keybord = ReplyKeyboardMarkup(resize_keyboard=True)
     
@@ -38,14 +41,18 @@ def next_menu(lang):
     
     jackpot_button = KeyboardButton(translation_text('Джекпот',lang))
     
+    if(len(db1.get_amount_user_tickets(id_user))>= 5):
+        keybord.add(jackpot_button)
+    
     keybord.add(lottery_button,
                 instruction_button,
                 support_button,
                 personal_account_button,
                 withdraw_money_button,
                 jackpot_size_button,
-                referall_link_button,
-                jackpot_button)
+                referall_link_button
+                )
+    
     return keybord
 
 def buy_ticket(lang):
@@ -67,4 +74,13 @@ def withdraw_money(lang):
     kb.add(withdraw_money_button)
     
     return kb
+
+def wanna_jackpot(lang):
+    kb = InlineKeyboardMarkup(row_width=1)
     
+    jackpot_button = InlineKeyboardButton(translation_text('Хочу джекпот',lang), callback_data='jackpot')
+    
+    kb.add(jackpot_button)
+    
+    return kb
+

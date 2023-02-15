@@ -57,28 +57,28 @@ class Database:
     
     def add_user_ticket(self,id_user,user_ticket):
         
-        sql = "update tickets set user_ticket = %s where id_user == %s"
+        sql = "update tickets set user_ticket = %s where id_user = %s"
         val = (user_ticket,id_user)
         self.cursor.execute(sql, val)
         self.mydb.commit()
     
     def add_win_ticket(self,win_ticket,id_user):
         
-        sql = "update tickets set win_ticket = %s where id_user == %s"
+        sql = "update tickets set win_ticket = %s where id_user = %s"
         val = (win_ticket,id_user)
         self.cursor.execute(sql, val)
         self.mydb.commit()
     
     def add_prize(self,amount_prize,id_user):
         
-        sql = "update tickets set prize = %s where id_user == %s"
+        sql = "update tickets set prize = %s where id_user = %s"
         val = (amount_prize,id_user)
         self.cursor.execute(sql, val)
         self.mydb.commit()
     
     def get_balance_user(self,id_user):
         
-        sql = 'select balance from users where id_user == %s'
+        sql = 'select balance from users where id_user = %s'
         val = (id_user)
         self.cursor.execute(sql,val)
         result = self.cursor.fetchone()[0]
@@ -88,7 +88,7 @@ class Database:
     def update_balance_user(self,id_user,prize):
         
         current_balance = self.get_balance_user(id_user)
-        sql = "update user set balance = %s where id_user == %s"
+        sql = "update user set balance = %s where id_user = %s"
         val = (prize + current_balance,id_user)
         self.cursor.execute(sql, val)
         self.mydb.commit()
@@ -105,3 +105,14 @@ class Database:
         val = (id_referal)
         self.cursor.execute(sql, val)
         self.mydb.commit()
+        
+    def get_amount_user_tickets(self,id_user):
+        sql = 'select id_ticket from tickets where id_user = %s'
+        
+        val = (id_user)
+        
+        self.cursor.execute(sql,val) #Проверить
+        
+        result = self.cursor.fetchall()
+        
+        return result

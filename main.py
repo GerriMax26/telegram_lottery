@@ -8,6 +8,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from FSM import UserState
 from FSM import BuyState
 from FSM import WithdrawMoney
+from FSM import JackpotState
 from aiogram.dispatcher import FSMContext
 from generation_number_win_ticket import generation_win_ticket
 from calculation_winnings import calculation_win
@@ -294,7 +295,33 @@ async def get_card_number(message:types.Message, state:FSMContext):
     #Отправить данные админу
     await state.reset_state(with_data=False)
 
+@dp.message_handler(text=['Джекпот','Jackpot'])
+async def get_jackpot(message:types.Message):
+    
+    lang = db.get_lang(message.from_user.id)
+    
+    await bot.send_message(message.from_user.id,
+                           translation_text(f'Размер джекпота: ',lang), #добавить получение размера джекпота из БД
+                           reply_markup=nav.wanna_jackpot(lang)    
+    )
 
+@dp.callback_query_handler(text_containce = 'jackpot')
+async def jackpot(callback:types.CallbackQuery):
+    
+    lang = db.get_lang(callback.from_user.id)
+    
+    await JackpotState.send_number.set()
+        
+    await bot.send_message(callback.from_user.id, 
+                           translation_text('Отправьте число из 8-и цифр',lang))
+
+@dp.message_handler(state = JackpotState.send_number)
+async def get_send_number(message: types.Message, state: FSMContext):
+    
+    lang = db.get_lang(message.from_user.id)
+       
+    await state.update_data(send_number=message.text)
+    
     
 if __name__ == '__main__':
     executor.start_polling(dp,skip_updates=True)

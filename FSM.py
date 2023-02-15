@@ -15,7 +15,10 @@ class UserState(StatesGroup):
 class BuyState(StatesGroup):
     send_number = State()
     
-class WithdrawMoney(StatesGroup):
+class WithdrawMoney(StatesGroup): #Поправить название
     summ = State()
     card_number = State()
+
+class JackpotState(StatesGroup):
+    send_number = State()
     
