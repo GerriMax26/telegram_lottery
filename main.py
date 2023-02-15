@@ -3,9 +3,11 @@ import markups as nav
 from translation import translation_text
 from db import Database
 from questions import registrations
+from questions import withdraw_money
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from FSM import UserState
 from FSM import BuyState
+from FSM import WithdrawMoney
 from aiogram.dispatcher import FSMContext
 from generation_number_win_ticket import generation_win_ticket
 from calculation_winnings import calculation_win
@@ -24,7 +26,7 @@ dp = Dispatcher(bot,storage=storage)
 
 db = Database()
 
-array_response = []
+array_response = []#проверить используется ли
 
 
 @dp.message_handler(commands=['start']) 
@@ -164,6 +166,7 @@ async def buy_ticket(callback: types.CallbackQuery):
         await bot.send_message(callback.from_user.id, 
                            translation_text('Отправьте число из 8-и цифр',lang))
 
+
 @dp.message_handler(state = BuyState.send_number)
 async def get_send_numbers(message: types.Message, state: FSMContext):
     
@@ -196,8 +199,6 @@ async def get_send_numbers(message: types.Message, state: FSMContext):
                                reply_markup=nav.buy_ticket(lang))
     
     
-   
-    
 @dp.callback_query_handler(text_containce = 'back')
 async def back_menu(callback: types.CallbackQuery):
     lang = db.get_lang(callback.from_user.id)
@@ -227,6 +228,64 @@ async def get_instruction(message: types.Message):
                                    file.read())
     
 
-                           
+@dp.message_handler(text = ['Поддержка','Soporte','Support'])      
+async def get_support(message: types.Message):
+    
+    lang = db.get_lang(message.from_user.id)
+    await bot.send_message(message.from_user.id,
+                           translation_text('Какой-то текст'+'https://t.me/moxxx2',lang)    
+    )
+
+
+@dp.message_handler(text = ['Personal account','Личный кабинет','Área personal'])
+async def get_info_personal_account(message: types.Message):
+    
+    lang = db.get_lang(message.from_user.id)
+    
+    await bot.send_message(message.from_user.id,
+                           translation_text(f'Ваш баланс: {db.get_balance_user(message.from_user.id)} рублей',lang) 
+                           + translation_text(f'Размер джекпота: ',lang), #добавить получение размера джекпота из БД
+                           reply_markup=nav.withdraw_money(lang)    
+    )
+
+
+@dp.callback_query_handler(text_containce = 'money')
+async def withdraw_money(callback:types.CallbackQuery):
+    
+    await WithdrawMoney.summ.set()
+    
+    lang = db.get_lang(callback.from_user.id)
+    
+    await bot.send_message(callback.from_user.id,
+                               translation_text(withdraw_money(0),lang))
+    
+    #Проверка, что хватает денег
+
+@dp.message_handler(state = WithdrawMoney.summ)
+async def get_summ(message: types.Message, state: FSMContext):
+    
+    lang = db.get_lang(message.from_user.id)
+    
+    await state.update_data(summ=message.text)
+    
+    await bot.send_message(message.from_user.id,
+                               translation_text(withdraw_money(1),lang))
+    await UserState.next()
+
+@dp.message_handler(state = WithdrawMoney.card_number)
+async def get_card_number(message:types.Message, state:FSMContext):
+    
+    lang = db.get_lang(message.from_user.id)
+    
+    await state.update_data(card_number=message.text)
+    
+    await bot.send_message(message.from_user.id,
+                               translation_text('Заявĸа принята, ожидайте ответ от поддержĸи.',lang))
+    
+    #Отправить данные админу
+    await state.reset_state(with_data=False)
+
+
+    
 if __name__ == '__main__':
     executor.start_polling(dp,skip_updates=True)

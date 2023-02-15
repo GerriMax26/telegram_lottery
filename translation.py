@@ -16,7 +16,7 @@ translations = {
         'Поддержка':'Support',
         'Личный кабинет':'Personal account',
         'Вывести деньги':'Withdraw money',
-        'Размер джекпота':'Jackpot Size',
+        'Размер джекпота:':'Jackpot Size:',
         'Реферальная ссылка':'Referral link',
         'Джекпот':'Jackpot',
         'Купить билет':'Buy a ticket',
@@ -25,7 +25,8 @@ translations = {
         'Номер выигрышного билета:':'Winning ticket number:',
         'Ваш выигрыш:':'Your winnings:',
         'рублей':'$',
-        'Назад':'Back'
+        'Назад':'Back',
+        'Ваш баланс:':'Your balance:'
     },
     'es':{
         'Привет!': 'Hola!',
@@ -44,7 +45,7 @@ translations = {
         'Поддержка':'Soporte',
         'Личный кабинет':'Área personal',
         'Вывести деньги':'Retirar dinero',
-        'Размер джекпота':'Tamaño del bote',
+        'Размер джекпота:':'Tamaño del bote:',
         'Реферальная ссылка':'Enlace de referencia',
         'Джекпот':'Jackpot',
         'Купить билет':'Comprar un billete',
@@ -53,7 +54,8 @@ translations = {
         'Номер выигрышного билета:':'Número de billete ganador:',
         'Ваш выигрыш:':'Sus ganancias:',
         'рублей':'euro',
-        'Назад':'Atrás'
+        'Назад':'Atrás',
+        'Ваш баланс:':'Su saldo:'
     }
 }
 

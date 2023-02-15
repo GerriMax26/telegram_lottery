@@ -92,4 +92,4 @@ class Database:
         val = (prize + current_balance,id_user)
         self.cursor.execute(sql, val)
         self.mydb.commit()
-    
+        

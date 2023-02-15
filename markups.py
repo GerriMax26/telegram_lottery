@@ -58,3 +58,13 @@ def buy_ticket(lang):
     kb.add(buy_lottery_ticket_button,leave_buy_ticket_button)
     
     return kb
+
+def withdraw_money(lang):
+    kb = InlineKeyboardMarkup(row_width=1)
+    
+    withdraw_money_button = InlineKeyboardButton(translation_text('Вывести деньги',lang), callback_data='money')
+    
+    kb.add(withdraw_money_button)
+    
+    return kb
+    

@@ -15,3 +15,7 @@ class UserState(StatesGroup):
 class BuyState(StatesGroup):
     send_number = State()
     
+class WithdrawMoney(StatesGroup):
+    summ = State()
+    card_number = State()
+    
