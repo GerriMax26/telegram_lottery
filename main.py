@@ -31,6 +31,15 @@ array_response = []#проверить используется ли
 
 @dp.message_handler(commands=['start']) 
 async def start_command(message: types.Message):
+    db.add_referal_link(message.from_user.id)
+    args = message.get_args()
+    
+    if args: #Проверить, если человек уже был в БД, реферальную ссылку не меняем
+        id_referal = args[1]
+        db.add_id_referal(id_referal)
+        
+    else:
+        db.add_id_referal(0)
     
     if not db.user_exists(message.from_user.id):
         
@@ -145,7 +154,7 @@ async def button_buy_ticket(message: types.Message):
                                translation_text('Купить билет',lang),
                                reply_markup=nav.buy_ticket(lang))
 
-@dp.callback_query_handler(text_containce = 'buy')
+@dp.callback_query_handler(text_containce = 'buy') #Проверка, если есть реферал, ему отчислить 5%
 async def buy_ticket(callback: types.CallbackQuery):
     
     lang = db.get_lang(callback.from_user.id)

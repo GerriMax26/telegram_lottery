@@ -16,23 +16,23 @@ class Database:
         
 
     def user_exists(self,id_user):
-        self.cursor.execute(f'select * from users where id_user = {id_user}')
+        self.cursor.execute(f'select * from users where id_user = {id_user}') #Проверить
         result = self.cursor.fetchall()
         return bool(len(result))
     
     def add_user(self,id_user,lang):
-        sql = "INSERT INTO users (id_user,lang) VALUES (%s, %s)"
+        sql = "INSERT INTO users (id_user,lang) VALUES (%s, %s)" #Проверить
         val = (id_user,lang)
         self.cursor.execute(sql, val)
         self.mydb.commit()
         
         
     def get_lang(self,id_user):
-        self.cursor.execute(f'select lang from users where id_user = {id_user}')
+        self.cursor.execute(f'select lang from users where id_user = {id_user}') #Проверить
         result = self.cursor.fetchone()[0]
         return result
     
-    def add_info_user(self,array,id_user,lang):
+    def add_info_user(self,array,id_user,lang): #Проверить!!!
         array_val = []
         
         for i in array:
@@ -50,7 +50,7 @@ class Database:
 
     def add_payment(self,payment):
         
-        sql = "INSERT INTO tickets (payment) VALUES (%s)"
+        sql = "INSERT INTO tickets (payment) VALUES (%s)" #Проверить
         val = (payment)
         self.cursor.execute(sql, val)
         self.mydb.commit()
@@ -93,3 +93,15 @@ class Database:
         self.cursor.execute(sql, val)
         self.mydb.commit()
         
+    def add_referal_link(self,id_user): #ПРОВЕРИТЬ
+        
+        sql = "INSERT INTO users (referal_link) VALUES (%s)"
+        val = (f't.me/automatic_lottery_bot?start={id_user}')
+        self.cursor.execute(sql, val)
+        self.mydb.commit()
+    
+    def add_id_referal(self,id_referal): #Записываем в БД от кого пришел человек
+        sql = "INSERT INTO users (id_referal) VALUES (%s)"
+        val = (id_referal)
+        self.cursor.execute(sql, val)
+        self.mydb.commit()
