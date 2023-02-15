@@ -55,31 +55,31 @@ class Database:
         self.cursor.execute(sql, val)
         self.mydb.commit()
     
-    def add_info_buy_tickets(self,id_user,id_ticket):
+    def add_user_ticket(self,id_user,user_ticket):
         
-        sql = "update buy_tickets set id_ticket = %s where id_user == %s"
-        val = (id_ticket,id_user)
+        sql = "update tickets set user_ticket = %s where id_user == %s"
+        val = (user_ticket,id_user)
         self.cursor.execute(sql, val)
         self.mydb.commit()
     
-    def add_win_ticket(self,id_user,id_win_ticket,id_ticket):
+    def add_win_ticket(self,win_ticket,id_user):
         
-        sql = "INSERT INTO win_tickets (id_win_ticket,id_user,id_ticket) VALUES (%s, %s, %s)"
-        val = (id_win_ticket,id_user,id_ticket)
+        sql = "update tickets set win_ticket = %s where id_user == %s"
+        val = (win_ticket,id_user)
         self.cursor.execute(sql, val)
         self.mydb.commit()
     
-    def add_prize(self,amount_prize,id_user,id_ticket,win_ticket):
+    def add_prize(self,amount_prize,id_user):
         
-        sql = "INSERT INTO prize (amount_priz,id_user,id_buy_tickets,id_buy_tickets_users) VALUES (%s, %s, %s, %s)"
-        val = (amount_prize,id_user,id_ticket,win_ticket)
+        sql = "update tickets set prize = %s where id_user == %s"
+        val = (amount_prize,id_user)
         self.cursor.execute(sql, val)
         self.mydb.commit()
     
     def get_balance_user(self,id_user):
         
-        sql = 'select balance from users where id_user = %s'
-        val = id_user
+        sql = 'select balance from users where id_user == %s'
+        val = (id_user)
         self.cursor.execute(sql,val)
         result = self.cursor.fetchone()[0]
         return result
