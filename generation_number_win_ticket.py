@@ -1,10 +1,14 @@
 import random
 from db import Database
-db = Database()
+db2 = Database()
 
 def generation_win_ticket(id_user):
-    random_number = random.randint(10000000,99999999)
-    #Проверка, что такого номера нет в БД
-    db.add_win_ticket(id_user,random_number)
-    
-    return random_number
+    while(True):
+        
+        random_number = random.randint(10000000,99999999)
+        array_win_ticket = db2.check_unique_win_ticket(id_user)
+        if(random_number not in array_win_ticket):
+            db2.add_win_ticket(id_user,random_number)
+            break
+        
+    return random_number        

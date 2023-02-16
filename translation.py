@@ -26,7 +26,14 @@ translations = {
         'Ваш выигрыш:':'Your winnings:',
         'рублей':'$',
         'Назад':'Back',
-        'Ваш баланс:':'Your balance:'
+        'Ваш баланс:':'Your balance:',
+        'Каĸую сумму вы хотите вывести?':'What amount do you want to withdraw?',
+        'Введите номер ĸарты':'Enter the card number',
+        'Заявĸа принята, ожидайте ответ от поддержĸи.':'The application has been accepted, expect a response from the support.',
+        'Реферальная программа':'Referral program',
+        'Хочу джеĸпот':'I want a jackpot',
+        'Ваш билет зарегистрирован!':'Your ticket is registered!',
+        'Номер выигрышного билета:':'Winning ticket number:'
     },
     'es':{
         'Привет!': 'Hola!',
@@ -55,7 +62,14 @@ translations = {
         'Ваш выигрыш:':'Sus ganancias:',
         'рублей':'euro',
         'Назад':'Atrás',
-        'Ваш баланс:':'Su saldo:'
+        'Ваш баланс:':'Su saldo:',
+        'Каĸую сумму вы хотите вывести?':'¿Cuál es la cantidad que desea retirar?',
+        'Введите номер ĸарты':'Introduzca el número de ĸarta',
+        'Заявĸа принята, ожидайте ответ от поддержĸи.':'Declaración aceptada, espere una respuesta del apoyo.',
+        'Реферальная программа':'Programa de referencia',
+        'Хочу джеĸпот':'Quiero un Jackpot',
+        'Ваш билет зарегистрирован!':'¡Su boleto está registrado!',
+        'Номер выигрышного билета:':'Número de billete ganador:'
     }
 }
 

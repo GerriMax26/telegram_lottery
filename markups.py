@@ -33,11 +33,7 @@ def next_menu(lang,id_user):
     
     personal_account_button = KeyboardButton(translation_text('Личный кабинет',lang))
     
-    withdraw_money_button = KeyboardButton(translation_text('вывести деньги',lang))
-    
-    jackpot_size_button = KeyboardButton(translation_text('Размер джекпота',lang))
-    
-    referall_link_button = KeyboardButton(translation_text('Реферальная ссылка',lang))
+    referall_link_button = KeyboardButton(translation_text('Реферальная программа',lang))
     
     jackpot_button = KeyboardButton(translation_text('Джекпот',lang))
     
@@ -48,8 +44,6 @@ def next_menu(lang,id_user):
                 instruction_button,
                 support_button,
                 personal_account_button,
-                withdraw_money_button,
-                jackpot_size_button,
                 referall_link_button
                 )
     

@@ -12,6 +12,9 @@ from FSM import JackpotState
 from aiogram.dispatcher import FSMContext
 from generation_number_win_ticket import generation_win_ticket
 from calculation_winnings import calculation_win
+from calculation_referal_program import calculation_referal
+
+WIN_TICKET = 0
 
 #C:/Users/GaraevMaksim/Desktop/token.txt
 #C:/Users/admin/Desktop/token.txt
@@ -27,7 +30,7 @@ dp = Dispatcher(bot,storage=storage)
 
 db = Database()
 
-array_response = []#проверить используется ли
+array_response = []
 
 
 @dp.message_handler(commands=['start']) 
@@ -35,12 +38,12 @@ async def start_command(message: types.Message):
     db.add_referal_link(message.from_user.id)
     args = message.get_args()
     
-    if args: #Проверить, если человек уже был в БД, реферальную ссылку не меняем
+    if args: 
         id_referal = args[1]
         db.add_id_referal(id_referal)
         
     else:
-        db.add_id_referal(0)
+        db.add_id_referal(0) #Проверить, если у чела была реферал, но он покинул бота и запустил заново
     
     if not db.user_exists(message.from_user.id):
         
@@ -72,6 +75,7 @@ async def set_language(callback: types.CallbackQuery):
                            translation_text('Привет!',lang),
                            reply_markup=nav.main_menu(lang))
 
+#Начало анкетирования для регистрации
 
 @dp.message_handler(text = ['Регистрация','Registration','Registro'])
 async def user_register(message: types.Message):
@@ -147,6 +151,7 @@ async def get_email(message: types.Message, state: FSMContext):
             
     await state.reset_state(with_data=False)
 
+#Конец анкетирования для регистрации
 
 @dp.message_handler(text = ['Лотерея','Lottery','Lotería'])
 async def button_buy_ticket(message: types.Message):
@@ -155,7 +160,7 @@ async def button_buy_ticket(message: types.Message):
                                translation_text('Купить билет',lang),
                                reply_markup=nav.buy_ticket(lang))
 
-@dp.callback_query_handler(text_containce = 'buy') #Проверка, если есть реферал, ему отчислить 5%
+@dp.callback_query_handler(text_containce = 'buy') 
 async def buy_ticket(callback: types.CallbackQuery):
     
     lang = db.get_lang(callback.from_user.id)
@@ -171,6 +176,11 @@ async def buy_ticket(callback: types.CallbackQuery):
 
         db.add_payment(payment) #Фиксируем факт оплаты
         
+        if(db.check_id_referal(callback.from_user.id) != 0):
+            
+            db.update_balance_user(db.check_id_referal(callback.from_user.id),
+                                   calculation_referal(lang))
+            
         await BuyState.send_number.set()
         
         await bot.send_message(callback.from_user.id, 
@@ -217,7 +227,7 @@ async def back_menu(callback: types.CallbackQuery):
                                reply_markup=nav.next_menu(lang))
 
 
-@dp.message_handler(text = ['Инструкция','Instruction','Instrucciones'])
+@dp.message_handler(text = ['Инструкция','Instruction','Instrucciones']) #Поправить ссылки, но не критично
 async def get_instruction(message: types.Message):
     lang = db.get_lang(message.from_user.id)
     if lang == 'ru':
@@ -253,8 +263,8 @@ async def get_info_personal_account(message: types.Message):
     lang = db.get_lang(message.from_user.id)
     
     await bot.send_message(message.from_user.id,
-                           translation_text(f'Ваш баланс: {db.get_balance_user(message.from_user.id)} рублей',lang) 
-                           + translation_text(f'Размер джекпота: ',lang), #добавить получение размера джекпота из БД
+                           translation_text('Ваш баланс:',lang) + str(db.get_balance_user(message.from_user.id)) + translation_text('рублей',lang) 
+                           + translation_text('Размер джекпота: ',lang)+ str(db.get_jackpot_size()) + translation_text('рублей',lang),
                            reply_markup=nav.withdraw_money(lang)    
     )
 
@@ -269,18 +279,27 @@ async def withdraw_money(callback:types.CallbackQuery):
     await bot.send_message(callback.from_user.id,
                                translation_text(withdraw_money(0),lang))
     
-    #Проверка, что хватает денег
 
 @dp.message_handler(state = WithdrawMoney.summ)
 async def get_summ(message: types.Message, state: FSMContext):
-    
     lang = db.get_lang(message.from_user.id)
     
     await state.update_data(summ=message.text)
     
-    await bot.send_message(message.from_user.id,
-                               translation_text(withdraw_money(1),lang))
-    await UserState.next()
+    data = await state.get_data()
+    
+    if(db.get_balance_user(message.from_user.id) >= data[0]):
+        
+        await bot.send_message(message.from_user.id,
+                                translation_text(withdraw_money(1),lang))
+        await WithdrawMoney.next()
+    else:
+        await state.reset_state(with_data=False)
+        await bot.send_message(message.from_user.id,
+                                translation_text('Недостаточно средств на балансе, уĸажите другую сумму!',lang))
+        
+        await WithdrawMoney.summ.set()
+    
 
 @dp.message_handler(state = WithdrawMoney.card_number)
 async def get_card_number(message:types.Message, state:FSMContext):
@@ -295,13 +314,24 @@ async def get_card_number(message:types.Message, state:FSMContext):
     #Отправить данные админу
     await state.reset_state(with_data=False)
 
+@dp.message_handler(text = ['Реферальная программа','Referral program','Programa de referencia'])
+async def get_referal_link(message:types.Message):
+    
+    lang = db.get_lang(message.from_user.id)
+    
+    await bot.send_message(message.from_user.id,
+                               translation_text('Какой-то текст',lang)+db.get_referal_link(message.from_user.id))
+    
 @dp.message_handler(text=['Джекпот','Jackpot'])
 async def get_jackpot(message:types.Message):
     
     lang = db.get_lang(message.from_user.id)
     
+    #Проверка на дату, если 31 декабря, то кнопку не отправляем. Также проверку на то, что юзер до этого не регал билет
+    
+    
     await bot.send_message(message.from_user.id,
-                           translation_text(f'Размер джекпота: ',lang), #добавить получение размера джекпота из БД
+                           translation_text(f'Размер джекпота: ',lang)+str(db.get_jackpot_size()),
                            reply_markup=nav.wanna_jackpot(lang)    
     )
 
@@ -322,6 +352,13 @@ async def get_send_number(message: types.Message, state: FSMContext):
        
     await state.update_data(send_number=message.text)
     
+    data = await state.get_data()
     
+    db.add_jackpot_ticket(message.from_user.id,data[0])
+    
+    await bot.send_message(message.from_user.id, 
+                           translation_text('Ваш билет зарегистрирован!',lang))
+    
+
 if __name__ == '__main__':
     executor.start_polling(dp,skip_updates=True)
