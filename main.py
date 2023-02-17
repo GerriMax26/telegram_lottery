@@ -19,6 +19,7 @@ from datetime import datetime
 import schedule
 import time
 from datetime import date
+from aiogram.dispatcher.filters import Text
 
 WIN_TICKET = 0
 
@@ -40,18 +41,19 @@ array_response = []
     
 @dp.message_handler(commands=['start']) 
 async def start_command(message: types.Message):
-    db.add_referal_link(message.from_user.id)
-    args = message.get_args()
-    
-    if args: 
-        id_referal = args[1]
-        db.add_id_referal(id_referal)
-        
-    else:
-        db.add_id_referal(0) #Проверить, если у чела была реферал, но он покинул бота и запустил заново
+    #проверка, что в бд такого уже нет
+
     
     if not db.user_exists(message.from_user.id):
+        db.add_referal_link(message.from_user.id)
+        args = message.get_args()
+    
+        if args: 
+            id_referal = args[1]
+            db.add_id_referal(id_referal)
         
+        else:
+            db.add_id_referal(0,message.from_user.id)
         await bot.send_message(message.from_user.id, 
                                'Choise language:',
                          reply_markup=nav.lang_menu)
@@ -61,19 +63,17 @@ async def start_command(message: types.Message):
         await bot.send_message(message.from_user.id, 
                             translation_text('Привет!',lang),
                             reply_markup=nav.main_menu(lang))
-bot.stop_message_live_location
+
 
 @dp.callback_query_handler(text_contains = 'lang_')
 async def set_language(callback: types.CallbackQuery):
     
     await bot.delete_message(callback.from_user.id,
                              callback.message.message_id)
-    
-    if not db.user_exists(callback.from_user.id):
         
-        lang = callback.data[5:]
+    lang = callback.data[5:]
         
-        db.add_user(callback.from_user.id,
+    db.add_user(callback.from_user.id,
                     lang)
         
     await bot.send_message(callback.from_user.id, 
@@ -148,12 +148,14 @@ async def get_email(message: types.Message, state: FSMContext):
     for i in data:
         array_response.append(data[i])
     db.add_info_user(array_response,
-                        message.from_user.id,
-                        lang)
+                        message.from_user.id 
+                        )
     await bot.send_message(message.from_user.id,f"{data['full_name']},"+
                                translation_text('Регистрация завершена!',lang),
                                reply_markup=nav.next_menu(lang,message.from_user.id))
-            
+    
+    await bot.send_message(os.getenv('id_admin'),db.get_all_data_user(message.from_user.id))
+        
     await state.reset_state(with_data=False)
 
 #Конец анкетирования для регистрации
@@ -162,10 +164,10 @@ async def get_email(message: types.Message, state: FSMContext):
 async def button_buy_ticket(message: types.Message):
     lang = db.get_lang(message.from_user.id)
     await bot.send_message(message.from_user.id,
-                               translation_text('Купить билет',lang),
+                               translation_text('Купить билет',lang),#Поменять сообщение Купить билет
                                reply_markup=nav.buy_ticket(lang))
 
-@dp.callback_query_handler(text_containce = 'buy') 
+@dp.callback_query_handler(Text(startswith = 'buy')) 
 async def buy_ticket(callback: types.CallbackQuery):
     
     lang = db.get_lang(callback.from_user.id)
@@ -179,9 +181,12 @@ async def buy_ticket(callback: types.CallbackQuery):
         await bot.send_message(callback.from_user.id, 
                            translation_text('Оплата прошла успешно!',lang))
 
-        db.add_payment(payment) #Фиксируем факт оплаты
+        await bot.send_message(os.getenv('id_admin'), 
+                           f'{db.get_all_data_user(callback.from_user.id)} купил билет.') 
         
-        if(db.check_id_referal(callback.from_user.id) != 0):
+        db.add_payment(payment,callback.from_user.id) #Фиксируем факт оплаты 
+        
+        if(db.check_id_referal(callback.from_user.id) != 0): 
             
             db.update_balance_user(db.check_id_referal(callback.from_user.id),
                                    calculation_referal(lang))
@@ -192,7 +197,7 @@ async def buy_ticket(callback: types.CallbackQuery):
                            translation_text('Отправьте число из 8-и цифр',lang))
 
 
-@dp.message_handler(state = BuyState.send_number)
+@dp.message_handler(state = BuyState.send_number) #Какие-то траблы с FSM
 async def get_send_numbers(message: types.Message, state: FSMContext):
     
        
@@ -223,8 +228,10 @@ async def get_send_numbers(message: types.Message, state: FSMContext):
                                                 lang),
                                reply_markup=nav.buy_ticket(lang))
     
+    await bot.send_message(os.getenv('id_admin'),db.get_all_data_user(message.from_user.id) + 'выиграл' + translation_text(f"{result_win}" + translation_text('рублей',lang),
+                                                lang))
     
-@dp.callback_query_handler(text_containce = 'back')
+@dp.callback_query_handler(Text(startswith= 'back'))
 async def back_menu(callback: types.CallbackQuery):
     lang = db.get_lang(callback.from_user.id)
     await bot.send_message(callback.from_user.id,
@@ -274,7 +281,7 @@ async def get_info_personal_account(message: types.Message):
     )
 
 
-@dp.callback_query_handler(text_containce = 'money')
+@dp.callback_query_handler(Text(startswith = 'money'))
 async def withdraw_money(callback:types.CallbackQuery):
     
     await WithdrawMoney.summ.set()
@@ -316,7 +323,9 @@ async def get_card_number(message:types.Message, state:FSMContext):
     await bot.send_message(message.from_user.id,
                                translation_text('Заявĸа принята, ожидайте ответ от поддержĸи.',lang))
     
-    #Отправить данные админу
+    data = await state.get_data()
+    
+    await bot.send_message(os.getenv('id_admin'),db.get_all_data_user(message.from_user.id) + f'сумма для вывода: {data[0]}' + f'номер карты: {data[1]}')
     await state.reset_state(with_data=False)
 
 @dp.message_handler(text = ['Реферальная программа','Referral program','Programa de referencia'])
@@ -353,7 +362,7 @@ async def get_jackpot(message:types.Message):
         await bot.send_message(message.from_user.id,
                         translation_text('Регистрация билетов для участия в Джекпоте завершена!',lang))
     
-@dp.callback_query_handler(text_containce = 'jackpot')
+@dp.callback_query_handler(Text(startswith= 'jackpot'))
 async def jackpot(callback:types.CallbackQuery):
     
     lang = db.get_lang(callback.from_user.id)
@@ -388,6 +397,7 @@ async def get_send_number(message: types.Message, state: FSMContext):
 
 if __name__ == '__main__':
     executor.start_polling(dp,skip_updates=True)
+    
     schedule.every().day.at('00:00').do(generation_win_ticket)
     while True:
         schedule.run_pending()

@@ -37,7 +37,9 @@ def next_menu(lang,id_user):
     
     jackpot_button = KeyboardButton(translation_text('Джекпот',lang))
     
-    if(len(db1.get_amount_user_tickets(id_user))>= 5):
+    len_array = len(db1.get_amount_user_tickets(id_user))
+    
+    if(len_array>= 5):
         keybord.add(jackpot_button)
     
     keybord.add(lottery_button,

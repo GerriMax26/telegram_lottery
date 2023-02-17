@@ -55,7 +55,7 @@ class Database:
         result = self.cursor.fetchone()[0]
         return result
     
-    def add_info_user(self,array,id_user): #Ок
+    def add_info_user(self,array,id_user): #ТЕСТ
         
         array_val = []
         
@@ -71,10 +71,9 @@ class Database:
 
     def check_id_referal(self,id_user): #ok
         
-        sql = 'select id_referal from users where id_user = %s'
-        val = (id_user)
-        self.cursor.execute(sql,val) 
-        result = self.cursor.fetchall()
+        sql = f'select id_referal from users where id_user = {id_user}'
+        self.cursor.execute(sql) 
+        result = self.cursor.fetchone()[0]
         return result
     
     def add_payment(self,payment,id_user): #ok
@@ -145,9 +144,8 @@ class Database:
     
     def get_amount_user_tickets(self,id_user): #ok
         
-        sql = 'select id_ticket from tickets where id_user = %s'
-        val = (id_user)
-        self.cursor.execute(sql,val) 
+        sql = f'select id_ticket from tickets where id_user = {id_user}'
+        self.cursor.execute(sql) 
         result = self.cursor.fetchall()
         return result
     
@@ -171,5 +169,11 @@ class Database:
         sql = 'select id_user from jackpot where id_jackpot = %s'
         val = (id_jackpot)
         self.cursor.execute(sql,val) 
+        result = self.cursor.fetchall()
+        return result
+    
+    def get_all_data_user(self,id_user):
+        sql = f'select * from users where id_user = {id_user}'
+        self.cursor.execute(sql) 
         result = self.cursor.fetchall()
         return result
