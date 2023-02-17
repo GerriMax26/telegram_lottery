@@ -55,7 +55,7 @@ class Database:
         result = self.cursor.fetchone()[0]
         return result
     
-    def add_info_user(self,array,id_user): #ТЕСТ
+    def add_info_user(self,array,id_user):
         
         array_val = []
         
@@ -85,7 +85,7 @@ class Database:
     
     def add_user_ticket(self,id_user,user_ticket): #ok
         
-        sql = "update tickets set user_ticket = %s where id_user = %s"
+        sql = "update tickets set user_ticket = %s where id_user = %s and user_ticket = NULL"
         val = (user_ticket,id_user)
         self.cursor.execute(sql, val)
         self.mydb.commit()
@@ -99,7 +99,7 @@ class Database:
     
     def add_win_ticket(self,win_ticket,id_user): #ok изменить на insert!!!
         
-        sql = "update tickets set win_ticket = %s where id_user = %s"
+        sql = "update tickets set win_ticket = %s where id_user = %s and win_ticket = NULL"
         val = (win_ticket,id_user)
         self.cursor.execute(sql, val)
         self.mydb.commit()
