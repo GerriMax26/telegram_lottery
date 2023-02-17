@@ -7,7 +7,7 @@ translations = {
         'Ваша страна?':'Your country?',
         'Ваш город?':'Your city?',
         'Ваш адрес?':'Your address?',
-        'Ваш индеĸс?':'Your postal code?',
+        'Ваш индеĸс?':'Your postal code?', #проверить в main
         'Ваш номер телефона?':'Your phone number?',
         'Ваш адрес электронной почты?':'Your email address?',
         'регистрация завершена!':'registration is complete!',
@@ -33,7 +33,9 @@ translations = {
         'Реферальная программа':'Referral program',
         'Хочу джеĸпот':'I want a jackpot',
         'Ваш билет зарегистрирован!':'Your ticket is registered!',
-        'Номер выигрышного билета:':'Winning ticket number:'
+        'Номер выигрышного билета:':'Winning ticket number:',
+        'Регистрация билетов для участия в Джекпоте завершена!':'',
+        'Вы уже зарегистрированы в лотерее!':''
     },
     'es':{
         'Привет!': 'Hola!',
@@ -69,8 +71,10 @@ translations = {
         'Реферальная программа':'Programa de referencia',
         'Хочу джеĸпот':'Quiero un Jackpot',
         'Ваш билет зарегистрирован!':'¡Su boleto está registrado!',
-        'Номер выигрышного билета:':'Número de billete ganador:'
-    }
+        'Номер выигрышного билета:':'Número de billete ganador:',
+        'Регистрация билетов для участия в Джекпоте завершена!':'',
+        'Вы уже зарегистрированы в лотерее!':''
+    }#last row add
 }
 
 def translation_text(text,lang = 'ru'):

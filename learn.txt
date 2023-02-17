@@ -38,3 +38,5 @@ async def cmd_start(message: Message):
 13)Хранимые процедуры
 
 14) fetchall() - Возвращает массив значений выборки
+
+15)https://nztcoder.com/2022/09/23/set-commands-bot-aiogram/ стоп бота

@@ -1,6 +1,8 @@
 import random
 from datetime import date
 
+
+
 def generation_win_ticket():
     
     today = date.today()

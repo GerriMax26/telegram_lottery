@@ -1,5 +1,9 @@
-#Методы для отправки оповещений админу
-# id_admin = 473666786
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+id_admin = os.getenv('id_admin') #Надо к int или нет???
 
 
 def withdraw_money():

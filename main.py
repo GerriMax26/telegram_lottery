@@ -13,14 +13,18 @@ from aiogram.dispatcher import FSMContext
 from generation_number_win_ticket import generation_win_ticket
 from calculation_winnings import calculation_win
 from calculation_referal_program import calculation_referal
+import os
+from dotenv import load_dotenv
+from datetime import datetime
+import schedule
+import time
+from datetime import date
 
 WIN_TICKET = 0
 
-#C:/Users/GaraevMaksim/Desktop/token.txt
-#C:/Users/admin/Desktop/token.txt
+load_dotenv()
 
-with open('C:/Users/admin/Desktop/token.txt','r') as file:
-    TOKEN_API = file.readline()
+TOKEN_API = os.getenv('TOKEN')
 
 bot = Bot(TOKEN_API)
 
@@ -33,6 +37,7 @@ db = Database()
 array_response = []
 
 
+    
 @dp.message_handler(commands=['start']) 
 async def start_command(message: types.Message):
     db.add_referal_link(message.from_user.id)
@@ -56,7 +61,7 @@ async def start_command(message: types.Message):
         await bot.send_message(message.from_user.id, 
                             translation_text('Привет!',lang),
                             reply_markup=nav.main_menu(lang))
-
+bot.stop_message_live_location
 
 @dp.callback_query_handler(text_contains = 'lang_')
 async def set_language(callback: types.CallbackQuery):
@@ -147,7 +152,7 @@ async def get_email(message: types.Message, state: FSMContext):
                         lang)
     await bot.send_message(message.from_user.id,f"{data['full_name']},"+
                                translation_text('Регистрация завершена!',lang),
-                               reply_markup=nav.next_menu(lang))
+                               reply_markup=nav.next_menu(lang,message.from_user.id))
             
     await state.reset_state(with_data=False)
 
@@ -224,7 +229,7 @@ async def back_menu(callback: types.CallbackQuery):
     lang = db.get_lang(callback.from_user.id)
     await bot.send_message(callback.from_user.id,
                                translation_text('Главное меню',lang),
-                               reply_markup=nav.next_menu(lang))
+                               reply_markup=nav.next_menu(lang,callback.from_user.id))
 
 
 @dp.message_handler(text = ['Инструкция','Instruction','Instrucciones']) #Поправить ссылки, но не критично
@@ -264,7 +269,7 @@ async def get_info_personal_account(message: types.Message):
     
     await bot.send_message(message.from_user.id,
                            translation_text('Ваш баланс:',lang) + str(db.get_balance_user(message.from_user.id)) + translation_text('рублей',lang) 
-                           + translation_text('Размер джекпота: ',lang)+ str(db.get_jackpot_size()) + translation_text('рублей',lang),
+                           + translation_text('Размер джекпота: ',lang)+ str(db.get_jackpot_prize()) + translation_text('рублей',lang),
                            reply_markup=nav.withdraw_money(lang)    
     )
 
@@ -327,14 +332,27 @@ async def get_jackpot(message:types.Message):
     
     lang = db.get_lang(message.from_user.id)
     
-    #Проверка на дату, если 31 декабря, то кнопку не отправляем. Также проверку на то, что юзер до этого не регал билет
+    today = date.today()
+    if(today[5:len(today)] != '12-31'):
+        
+        array_date_jackpot = db.get_date_jackpot()
     
+        for i in array_date_jackpot: #получаем id_jackpot использую текущую дату
+            for j in i:
+                if (datetime.now() >= j[1] and datetime.now() <= j[2]):
+                    id_jackpot = j[0]
+                    break
+        if(message.from_user.id not in db.get_all_jackpot_user(id_jackpot)):
+            await bot.send_message(message.from_user.id,
+                            translation_text(f'Размер джекпота: ',lang)+str(db.get_jackpot_prize()),
+                            reply_markup=nav.wanna_jackpot(lang))
+        else:
+            await bot.send_message(message.from_user.id,
+                        translation_text('Вы уже зарегистрированы в лотерее!',lang))
+    else:
+        await bot.send_message(message.from_user.id,
+                        translation_text('Регистрация билетов для участия в Джекпоте завершена!',lang))
     
-    await bot.send_message(message.from_user.id,
-                           translation_text(f'Размер джекпота: ',lang)+str(db.get_jackpot_size()),
-                           reply_markup=nav.wanna_jackpot(lang)    
-    )
-
 @dp.callback_query_handler(text_containce = 'jackpot')
 async def jackpot(callback:types.CallbackQuery):
     
@@ -354,7 +372,15 @@ async def get_send_number(message: types.Message, state: FSMContext):
     
     data = await state.get_data()
     
-    db.add_jackpot_ticket(message.from_user.id,data[0])
+    array_date_jackpot = db.get_date_jackpot()
+    
+    for i in array_date_jackpot: #получаем id_jackpot использую текущую дату
+        for j in i:
+            if (datetime.now() >= j[1] and datetime.now() <= j[2]):
+                id_jackpot = j[0]
+                break
+        
+    db.add_jackpot_ticket(id_jackpot,message.from_user.id,data[0])
     
     await bot.send_message(message.from_user.id, 
                            translation_text('Ваш билет зарегистрирован!',lang))
@@ -362,3 +388,9 @@ async def get_send_number(message: types.Message, state: FSMContext):
 
 if __name__ == '__main__':
     executor.start_polling(dp,skip_updates=True)
+    schedule.every().day.at('00:00').do(generation_win_ticket)
+    while True:
+        schedule.run_pending()
+        time.sleep(86400)
+    
+    

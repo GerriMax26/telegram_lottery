@@ -1,14 +1,18 @@
-from getpass import getpass
-from mysql.connector import connect,Error
 import mysql.connector
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class Database:
+    
     def __init__(self):
+        
         self.mydb = mysql.connector.connect(
-            host = 'localhost',
-            user = input('Имя пользователя: '),
-            password = getpass('Пароль: '),
-            database = 'lottery',
+            host = os.getenv('HOST'),
+            user = os.getenv('USER'),
+            password = os.getenv('PASSWORD'),
+            database = os.getenv('DATABASE'),
         )
         self.cursor = self.mydb.cursor()
 
@@ -16,6 +20,7 @@ class Database:
         
 
     def user_exists(self,id_user): #ок
+        
         self.cursor.execute(f'select * from users where id_user = {id_user}') 
         result = self.cursor.fetchall()
         return bool(len(result))
@@ -29,12 +34,14 @@ class Database:
         self.mydb.commit()
         
     def add_id_referal(self,id_referal,id_user): #ok
+        
         sql = "update users set id_referal = %s where id_user = %s"
         val = (id_referal,id_user)
         self.cursor.execute(sql, val)
         self.mydb.commit()
         
     def add_user(self,id_user,lang): #ок
+        
         sql = "update users set lang = %s where id_user = %s"
         val = (lang,id_user)
         self.cursor.execute(sql, val)
@@ -43,11 +50,13 @@ class Database:
     
         
     def get_lang(self,id_user): #ок
-        self.cursor.execute(f'select lang from users where id_user = {id_user}') #Проверить
+        
+        self.cursor.execute(f'select lang from users where id_user = {id_user}')
         result = self.cursor.fetchone()[0]
         return result
     
     def add_info_user(self,array,id_user): #Ок
+        
         array_val = []
         
         for i in array:
@@ -61,6 +70,7 @@ class Database:
         self.mydb.commit()
 
     def check_id_referal(self,id_user): #ok
+        
         sql = 'select id_referal from users where id_user = %s'
         val = (id_user)
         self.cursor.execute(sql,val) 
@@ -82,6 +92,7 @@ class Database:
         self.mydb.commit()
     
     def check_unique_win_ticket(self,id_user): #ok
+        
         sql = 'select win_ticket from tickets where id_user = %s'
         val = (id_user)
         self.cursor.execute(sql,val) 
@@ -118,35 +129,47 @@ class Database:
         result = self.cursor.fetchone()[0]
         return result
     
-    def get_jackpot_size(self): #ok
-        sql = 'select jackpot_size from jackpot'
-        self.cursor.execute(sql)
-        result = self.cursor.fetchone()[0]
-        return result
-    
     def get_referal_link(self,id_user):
         sql = 'select referel_link from users where id_user = %s'
         val = (id_user)
         self.cursor.execute(sql,val)
         result = self.cursor.fetchone()[0]
         return result
+    
+    def get_jackpot_prize(self): #ok
         
-    def get_amount_user_tickets(self,id_user): #ok
-        sql = 'select id_ticket from tickets where id_user = %s'
-        
-        val = (id_user)
-        
-        self.cursor.execute(sql,val) 
-        
+        sql = 'select prize from jackpot'
+        self.cursor.execute(sql) 
         result = self.cursor.fetchall()
-        
         return result
     
-    def add_jackpot_ticket(self,id_user,user_ticket): #ok
-        sql = 'INSERT INTO jackpot (id_user,user_ticket) VALUES (%s,%s)'
+    def get_amount_user_tickets(self,id_user): #ok
         
-        val = (id_user,user_ticket)
+        sql = 'select id_ticket from tickets where id_user = %s'
+        val = (id_user)
+        self.cursor.execute(sql,val) 
+        result = self.cursor.fetchall()
+        return result
+    
+    
+    def add_jackpot_ticket(self,id_jackpot,id_user,user_ticket):
         
+        sql = "INSERT INTO jackpot_user (id_jackpot,id_user,user_ticket) VALUES (%s,%s,%s)" 
+        val = (id_jackpot,id_user,user_ticket)
         self.cursor.execute(sql, val)
         self.mydb.commit()
+    
+    def get_date_jackpot(self):
         
+        sql = 'select id_jackpot,start_time,end_time from jackpot'
+        self.cursor.execute(sql) 
+        result = self.cursor.fetchall()
+        return result
+    
+    def get_all_jackpot_user(self,id_jackpot):
+        
+        sql = 'select id_user from jackpot where id_jackpot = %s'
+        val = (id_jackpot)
+        self.cursor.execute(sql,val) 
+        result = self.cursor.fetchall()
+        return result
