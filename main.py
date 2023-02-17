@@ -156,7 +156,7 @@ async def get_email(message: types.Message, state: FSMContext):
     
     await bot.send_message(os.getenv('id_admin'),db.get_all_data_user(message.from_user.id))
         
-    await state.reset_state(with_data=False)
+    await state.finish()
 
 #Конец анкетирования для регистрации
 
@@ -197,7 +197,7 @@ async def buy_ticket(callback: types.CallbackQuery):
                            translation_text('Отправьте число из 8-и цифр',lang))
 
 
-@dp.message_handler(state = BuyState.send_number) #Какие-то траблы с FSM
+@dp.message_handler(state = BuyState.send_number) 
 async def get_send_numbers(message: types.Message, state: FSMContext):
     
        
@@ -207,15 +207,15 @@ async def get_send_numbers(message: types.Message, state: FSMContext):
        
     data = await state.get_data() #получаем введенный номер пользователя
        
-    db.add_user_ticket(message.from_user.id,data[0]) #Добавить в БД номер билета, который ввел пользователь
+    db.add_user_ticket(message.from_user.id,data['send_number']) #Добавить в БД номер билета, который ввел пользователь
        
     id_win_ticket = generation_win_ticket(message.from_user.id) #Генерация выигрышного билета
        
     await bot.send_message(message.from_user.id,
                                translation_text('Номер выигрышного билета: '+ f"{id_win_ticket}",
-                                                lang))
-       
-    result_win = calculation_win(data[0],id_win_ticket,lang) #Расчет выигрыша
+                                                lang)) #до сюда ок
+
+    result_win = calculation_win(data['send_number'],id_win_ticket,lang) #Расчет выигрыша
     
     db.add_prize(result_win,message.from_user.id) #добавляем в БД размер выигрыша
     
@@ -224,7 +224,7 @@ async def get_send_numbers(message: types.Message, state: FSMContext):
     await state.reset_state(with_data=False)
     
     await bot.send_message(message.from_user.id,
-                               translation_text('Ваш выигрыш:'+ f"{result_win}" + translation_text('рублей',lang),
+                               translation_text('Ваш выигрыш: '+ f"{result_win}" + translation_text('рублей',lang),
                                                 lang),
                                reply_markup=nav.buy_ticket(lang))
     

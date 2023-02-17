@@ -6,7 +6,7 @@ def calculation_win(id_ticket,id_win_ticket,lang):
         'es':2
     }
     
-    id_ticket = str(id_ticket)
+    id_ticket = id_ticket
     
     id_win_ticket = str(id_win_ticket)
     

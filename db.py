@@ -92,13 +92,12 @@ class Database:
     
     def check_unique_win_ticket(self,id_user): #ok
         
-        sql = 'select win_ticket from tickets where id_user = %s'
-        val = (id_user)
-        self.cursor.execute(sql,val) 
+        sql = f'select win_ticket from tickets where id_user = {id_user}'
+        self.cursor.execute(sql) 
         result = self.cursor.fetchall()
         return result
     
-    def add_win_ticket(self,win_ticket,id_user): #ok
+    def add_win_ticket(self,win_ticket,id_user): #ok изменить на insert!!!
         
         sql = "update tickets set win_ticket = %s where id_user = %s"
         val = (win_ticket,id_user)
@@ -115,16 +114,15 @@ class Database:
     def update_balance_user(self,id_user,prize): #ok
         
         current_balance = self.get_balance_user(id_user)
-        sql = "update user set balance = %s where id_user = %s"
+        sql = "update users set balance = %s where id_user = %s"
         val = (prize + current_balance,id_user)
         self.cursor.execute(sql, val)
         self.mydb.commit()
     
     def get_balance_user(self,id_user): #ok
         
-        sql = 'select balance from users where id_user = %s'
-        val = (id_user)
-        self.cursor.execute(sql,val)
+        sql = f'select balance from users where id_user = {id_user}'
+        self.cursor.execute(sql)
         result = self.cursor.fetchone()[0]
         return result
     
