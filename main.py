@@ -38,7 +38,7 @@ db = Database()
 array_response = []
 
 
-    
+'''Добавил кнопку'''    
 @dp.message_handler(commands=['start']) 
 async def start_command(message: types.Message):
     #проверка, что в бд такого уже нет
