@@ -16,7 +16,7 @@ class Database:
         )
         self.cursor = self.mydb.cursor()
 
-        
+    #comment
         
 
     def user_exists(self,id_user): #ок
