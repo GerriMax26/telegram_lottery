@@ -1,25 +1,28 @@
+import os
+from datetime import datetime
+import time
+from datetime import date
+
 from aiogram import Bot,Dispatcher,executor,types
-import markups as nav
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram.dispatcher import FSMContext
+from dotenv import load_dotenv
+from aiogram.dispatcher.filters import Text
+import schedule
+
 from translation import translation_text
 from db import Database
 from questions import registrations
 from questions import withdraw_money
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from FSM import UserState
 from FSM import BuyState
 from FSM import WithdrawMoney
 from FSM import JackpotState
-from aiogram.dispatcher import FSMContext
 from generation_number_win_ticket import generation_win_ticket
 from calculation_winnings import calculation_win
 from calculation_referal_program import calculation_referal
-import os
-from dotenv import load_dotenv
-from datetime import datetime
-import schedule
-import time
-from datetime import date
-from aiogram.dispatcher.filters import Text
+import markups as nav
+
 
 WIN_TICKET = 0
 
