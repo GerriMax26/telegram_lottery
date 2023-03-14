@@ -16,31 +16,28 @@ class Database:
         )
         self.cursor = self.mydb.cursor()
 
-    #comment
-        
-
-    def user_exists(self,id_user): #ок
+    def user_exists(self,id_user):
         
         self.cursor.execute(f'select * from users where id_user = {id_user}') 
         result = self.cursor.fetchall()
         return bool(len(result))
     
     
-    def add_referal_link(self,id_user): #ок
+    def add_referal_link(self,id_user):
         
         sql = "INSERT INTO users (id_user,referal_link) VALUES (%s,%s)"
         val = (id_user,f't.me/automatic_lottery_bot?start={id_user}')
         self.cursor.execute(sql, val)
         self.mydb.commit()
         
-    def add_id_referal(self,id_referal,id_user): #ok
+    def add_id_referal(self,id_referal,id_user):
         
         sql = "update users set id_referal = %s where id_user = %s"
         val = (id_referal,id_user)
         self.cursor.execute(sql, val)
         self.mydb.commit()
         
-    def add_user(self,id_user,lang): #ок
+    def add_user(self,id_user,lang):
         
         sql = "update users set lang = %s where id_user = %s"
         val = (lang,id_user)
@@ -49,7 +46,7 @@ class Database:
     
     
         
-    def get_lang(self,id_user): #ок
+    def get_lang(self,id_user):
         
         self.cursor.execute(f'select lang from users where id_user = {id_user}')
         result = self.cursor.fetchone()[0]
@@ -69,28 +66,28 @@ class Database:
         self.cursor.execute(sql, val)
         self.mydb.commit()
 
-    def check_id_referal(self,id_user): #ok
+    def check_id_referal(self,id_user):
         
         sql = f'select id_referal from users where id_user = {id_user}'
         self.cursor.execute(sql) 
         result = self.cursor.fetchone()[0]
         return result
     
-    def add_payment(self,payment,id_user): #ok
+    def add_payment(self,payment,id_user):
         
         sql = "INSERT INTO tickets (payment,id_user) VALUES (%s,%s)" 
         val = (payment,id_user)
         self.cursor.execute(sql, val)
         self.mydb.commit()
     
-    def add_user_ticket(self,id_user,user_ticket): #ok
+    def add_user_ticket(self,id_user,user_ticket):
         
         sql = "update tickets set user_ticket = %s where id_user = %s and user_ticket = NULL"
         val = (user_ticket,id_user)
         self.cursor.execute(sql, val)
         self.mydb.commit()
     
-    def check_unique_win_ticket(self,id_user): #ok
+    def check_unique_win_ticket(self,id_user):
         
         sql = f'select win_ticket from tickets where id_user = {id_user}'
         self.cursor.execute(sql) 
@@ -104,14 +101,14 @@ class Database:
         self.cursor.execute(sql, val)
         self.mydb.commit()
     
-    def add_prize(self,amount_prize,id_user): #ok
+    def add_prize(self,amount_prize,id_user):
         
         sql = "update tickets set prize = %s where id_user = %s"
         val = (amount_prize,id_user)
         self.cursor.execute(sql, val)
         self.mydb.commit()
     
-    def update_balance_user(self,id_user,prize): #ok
+    def update_balance_user(self,id_user,prize):
         
         current_balance = self.get_balance_user(id_user)
         sql = "update users set balance = %s where id_user = %s"
@@ -119,7 +116,7 @@ class Database:
         self.cursor.execute(sql, val)
         self.mydb.commit()
     
-    def get_balance_user(self,id_user): #ok
+    def get_balance_user(self,id_user):
         
         sql = f'select balance from users where id_user = {id_user}'
         self.cursor.execute(sql)
@@ -133,14 +130,14 @@ class Database:
         result = self.cursor.fetchone()[0]
         return result
     
-    def get_jackpot_prize(self): #ok
+    def get_jackpot_prize(self):
         
         sql = 'select prize from jackpot'
         self.cursor.execute(sql) 
         result = self.cursor.fetchall()
         return result
     
-    def get_amount_user_tickets(self,id_user): #ok
+    def get_amount_user_tickets(self,id_user):
         
         sql = f'select id_ticket from tickets where id_user = {id_user}'
         self.cursor.execute(sql) 
